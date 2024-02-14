@@ -1,0 +1,112 @@
+﻿@using Online_Exam.Models;
+@model PrintViewModel
+@{
+    ViewBag.Title = "Index";
+}
+<style>
+    .container {
+        margin: auto;
+    }
+
+    table {
+        width: 100%;
+        margin-bottom: 1rem;
+        color: #333;
+        border-collapse: collapse;
+        border-spacing: 0;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    th, td {
+        padding: 1rem;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+
+    thead {
+        background-color: #ddd;
+        font-weight: bold;
+    }
+
+    tr:hover {
+        background-color: #f5f5f5;
+    }
+
+    td {
+        max-width: 200px;
+    }
+
+</style>
+
+<div class="container mt-4">
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Exam Code</th>
+                <th>Exam Title</th>
+                <th>Start Time</th>
+                <th>Grade</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.UsersViewModel)
+            {
+                if (@ViewBag.UserEmail == item.U_Email)
+                {
+                    var uniqueExamIds = new List<int>();
+                    var examTitles = new List<string>();
+
+                    @foreach (var val1 in Model.AnswersViewModel)
+                    {
+                        if (val1.U_Email == @ViewBag.UserEmail)
+                        {
+                            if (!uniqueExamIds.Contains(val1.Exam_id))
+                            {
+                                uniqueExamIds.Add(val1.Exam_id);
+                            }
+                        }
+                    }
+
+                    @foreach (var val2 in Model.ExamViewModel)
+                    {
+                        if (uniqueExamIds.Contains(val2.Exam_id))
+                        {
+                            examTitles.Add(val2.Exam_title);
+                        }
+                    }
+
+                    @for (int i = 0; i < uniqueExamIds.Count; i++)
+                    {
+                        var totalPointsEarned = 0m;
+                        var sumPoints = 0m;
+                        @if (Model.AnswersViewModel != null)
+                        {
+                            @foreach (var val3 in Model.AnswersViewModel)
+                            {
+                                @if (val3.U_Email == @ViewBag.UserEmail && val3.Exam_id == uniqueExamIds[i])
+                                {
+                                    totalPointsEarned += val3.Points_Earned;
+                                }
+            }
+                            @foreach (var que in Model.QuestionsViewModel)
+                            {
+                                @if (que.Exam_id == uniqueExamIds[i])
+                                {
+                                    sumPoints += que.Points;
+                                }
+                            }
+
+                        }
+
+                        <tr>
+                            <td>@uniqueExamIds[i]</td>
+                            <td>@examTitles[i]</td>
+                            <td>@Model.ExamViewModel.First(x => x.Exam_id == uniqueExamIds[i]).Start_time</td>
+                            <td>@totalPointsEarned / @sumPoints</td>
+                        </tr>
+                    }
+                }
+            }
+        </tbody>
+    </table>
+</div>

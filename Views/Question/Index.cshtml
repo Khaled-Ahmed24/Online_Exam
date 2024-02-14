@@ -1,0 +1,59 @@
+﻿@model IEnumerable<Online_Exam.Models.Questions>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Indexx</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<form asp-action="Finish" method="post">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Question_title)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Question_type)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Points)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Exam_id)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Question_title)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Question_type)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Points)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Exam_id)
+                    </td>
+                    <td> 
+                        @Html.ActionLink("Edit", "Edit", new { id = item.Question_id /* id=item.PrimaryKey */ }) |
+                        @Html.ActionLink("Details", "Details", new { id = item.Question_id  /*id=item.PrimaryKey */ }) |
+                        @Html.ActionLink("Delete", "Delete", new { id = item.Question_id /* id=item.PrimaryKey */ })
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <!-- Add a "Finish" button inside the form -->
+    <button type="submit" class="btn btn-success">Finish</button>
+</form>

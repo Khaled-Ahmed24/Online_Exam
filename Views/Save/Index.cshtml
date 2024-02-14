@@ -1,0 +1,10 @@
+﻿<!-- Index.cshtml -->
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Questions:</h1>
+@foreach (var questionId in ViewBag.Questions)
+{
+    <p>Question @questionId</p>
+}

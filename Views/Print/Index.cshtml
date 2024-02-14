@@ -1,0 +1,237 @@
+﻿@using Online_Exam.Models;
+@model PrintViewModel
+@{
+    ViewBag.Title = "Index";
+}
+<style>
+    body {
+        font-family: 'Cairo', sans-serif;
+        background-color: #eee;
+        text-align: center;
+        margin: 0;
+        padding: 0;
+    }
+
+    .exam-container {
+        max-width: 800px;
+        margin: 0 auto;
+        text-align: left;
+    }
+
+    h1, p, h2, h3 {
+        margin-bottom: 10px;
+    }
+
+    ul {
+        list-style: none;
+        padding: 0;
+    }
+
+    li {
+        margin-bottom: 5px;
+    }
+
+    .question-container {
+        margin-bottom: 20px;
+    }
+
+    .question-card {
+        border: 1px solid #3498db;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        padding: 15px;
+        margin-bottom: 20px;
+        background-color: #ddd;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .question-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+        width: 100%;
+    }
+
+    .choices-container {
+        background-color: #eee;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        padding: 15px;
+        margin-top: 10px;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .points {
+        margin-left: auto;
+    }
+
+    .choices-container ul {
+        background-color: transparent;
+        padding: 0;
+    }
+
+    .choices-container h2 {
+        margin-top: 0;
+    }
+
+    .radio-label {
+        margin-left: 10px;
+    }
+
+    input[type="radio"] {
+        margin-right: 5px;
+        background-color: #3498db;
+        border: 1px solid #3498db;
+        border-radius: 50%;
+    }
+
+        input[type="radio"]:checked {
+            background-color: #2980b9;
+            border-color: #2980b9;
+        }
+
+    .submit-button-container {
+        text-align: left;
+        margin-top: 20px;
+    }
+
+    .submit-button {
+        background-color: #003971;
+        color: #fff;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+    }
+
+        .submit-button:hover {
+            background-color: #00284b;
+        }
+
+    #duration {
+        font-size: 18px;
+        font-weight: bold;
+        color: #003971;
+        margin-bottom: 10px;
+    }
+</style>
+@using (Html.BeginForm("SaveAnswers", "Save", FormMethod.Post, new { id = "examForm" }))
+{
+    <div class="exam-container">
+        @foreach (var item in Model.ExamViewModel)
+        {
+            if (item.Exam_id == @ViewBag.mess)
+            {
+                int questionIndex = 1;
+                <div class="question-container">
+                    <div class="question-card">
+                        <div class="question-header">
+                            <h1>@item.Exam_title</h1>
+                            <p id="duration">Duration: @(item.Duration?.ToString("hh\\:mm\\:ss") ?? "00:00:00")</p>
+                        </div>
+                        <p>@item.Description</p>
+                        @foreach (var Que in Model.QuestionsViewModel)
+                        {
+                            if (item.Exam_id == Que.Exam_id)
+                            {
+                                int choiceIndex = 1;
+                                <div class="choices-container">
+                                    <div class="points">@Que.Points Point</div>
+                                    <h2>@questionIndex - @Que.Question_title</h2>
+                                    <ul>
+                                        @foreach (var ch in Model.ChoicesViewModel)
+                                        {
+                                            if (Que.Question_id == ch.Question_id)
+                                            {
+                                                @if (Que.Question_type == "CheckBox")
+                                                {
+                                                    <li>
+                                                        @{
+                                                            var choiceText1 = ch.Choice_text;
+                                                            var checkBoxName = "Q" + Que.Question_id.ToString(); // Use a unique identifier for the question
+                                                        }
+
+                                                        @Html.CheckBox(checkBoxName, false, new { value = choiceText1 }) @choiceText1
+                                                    </li>
+                                                }
+                                                else
+                                                {
+                                                    <li>
+                                                        @{
+                                                            var choiceText2 = ch.Choice_text;
+                                                            var radioButtonName = "Q" + Que.Question_id.ToString();
+                                                        }
+
+                                                        @Html.RadioButton(radioButtonName, choiceText2) @choiceText2
+                                                    </li>
+                                                }
+                                                choiceIndex++;
+                                            }
+                                            <script>
+                                                var examDurationInSeconds = @(item.Duration?.TotalSeconds ?? 0);
+                                            </script>
+                                        }
+                                    </ul>
+                                </div>
+                                questionIndex++;
+                            }
+                        }
+                    </div>
+                </div>
+            }
+        }
+        <div class="submit-button-container">
+            <input type="submit" value="Submit" class="submit-button" id="submitButton" />
+        </div>
+    </div>
+
+}
+<script>
+    var durationElement = document.getElementById('duration');
+    var examForm = document.getElementById('examForm');
+    var submitButton = document.getElementById('submitButton');
+    var hours = 0, minutes = 0, seconds = 0;
+
+    function updateDuration() {
+        hours = Math.floor(examDurationInSeconds / 3600);
+        minutes = Math.floor((examDurationInSeconds % 3600) / 60);
+        seconds = Math.floor(examDurationInSeconds % 60);
+
+        if (hours + minutes + seconds > 0) {
+            var durationText = 'Duration: ';
+            if (hours > 0) {
+                durationText += padNumber(hours) + ':';
+            }
+            durationText += padNumber(minutes) + ':' + padNumber(seconds) + ' ';
+
+            durationElement.innerText = durationText;
+        } else {
+            durationElement.style.display = 'none';
+        }
+    }
+    function padNumber(number) {
+        return (number < 10 ? '0' : '') + number;
+    }
+
+    if (examDurationInSeconds > 0) {
+        function countDown() {
+            updateDuration();
+            if (examDurationInSeconds <= 0) {
+                submitButton.click();
+            } else {
+                examDurationInSeconds--;
+                setTimeout(countDown, 1000);
+            }
+        }
+
+        countDown();
+    } else {
+        durationElement.style.display = 'none';
+    }
+</script>

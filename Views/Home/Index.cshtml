@@ -1,0 +1,271 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+    var alertMessage = TempData["AlertMessage"] as string;
+    var isNotFound = TempData["NotFound"] as string;
+
+}
+<div class="text-center">
+    <div class="home-page">
+        <div class="landing">
+            <div class="container">
+                <div class="text">
+                    <h1>Welcome To Our Website</h1>
+                    <p>Here you can create and enter Exams and Forms <br>and share with others</p>
+                </div>
+            </div>
+            <div class="choice">
+                <form asp-controller="Exam" asp-action="Create" method="get">
+                    <div class="box">
+                        <div class="text">
+                            <h2>Create Form</h2>
+                            <p>You Can Create From step by step and share link</p>
+                        </div>
+                        <div class="foot">
+                            <div class="create-btn">
+                                <button>Create</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <div class="box-space"></div>
+                <form asp-controller="Print" asp-action="Index" id="examForm">
+                    <div class="box">
+                        <div class="text">
+                            <h2>Enter Form</h2>
+                            <p>Please Enter Exam Code</p>
+                        </div>
+                        <div class="foot">
+                            <input type="number" name="link" id="examCodeInput">
+                            <div class="go-btn">
+                                <button onclick="saveExamCode()">Go</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (!string.IsNullOrEmpty(isNotFound))
+{
+    <script>
+        alert('@isNotFound');
+    </script>
+}
+
+@if (!string.IsNullOrEmpty(alertMessage))
+{
+    <script>
+        alert('@alertMessage');
+    </script>
+}
+<script>
+    function saveExamCode() {
+        var examCode = document.getElementById("examCodeInput").value;
+        $.post("/Exam/SaveExamCode", { examCode: examCode }, function (data) {
+            console.log(data);
+        });
+    }
+</script>
+<style>
+    * {
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Cairo', sans-serif;
+        background-color: #eee;
+    }
+
+    :root {
+        --main-color: #003971;
+        --main-color-alt: #1787e0;
+        --main-transition: 0.3s;
+        --main--padding-top: 108px;
+        --main--padding-bottom: 108px;
+        --section-background: #ececec;
+    }
+
+    html {
+        scroll-behavior: smooth;
+    }
+
+    ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .container {
+        padding-right: 15px;
+        padding-left: 15px;
+        margin-right: auto;
+        margin-left: auto;
+    }
+
+    header {
+        position: relative;
+        background-color: white;
+        -webkit-box-shadow: 0 0 10px #ddd;
+        -moz-box-shadow: 0 0 10px #ddd;
+        box-shadow: 0 0 10px #ddd;
+        margin-top: -5px;
+    }
+
+
+    .landing {
+        position: relative;
+        top: -40px;
+    }
+
+        .landing::before {
+            content: "";
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: -30px;
+            left: 0;
+            background-color: #ececec;
+            z-index: -1;
+        }
+
+        .landing > .container {
+            min-height: 500px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding-bottom: -50px;
+            margin-bottom: -250px;
+        }
+
+        .landing .text {
+            flex: 1;
+            margin-top: -200px;
+            text-align: center;
+        }
+
+            .landing .text h1 {
+                font-size: 40px;
+                margin: 0;
+                letter-spacing: -2;
+            }
+
+            .landing .text p {
+                line-height: 1.7;
+                color: #666;
+                font-size: 23px;
+                margin: 5px 0 -20px 0;
+            }
+
+        .landing .choice {
+            display: grid;
+            grid-template-columns: repeat(100px, 1fr);
+            gap: 20px;
+            justify-content: center;
+            align-items: center;
+            margin-left: 50px;
+            margin-right: 50px;
+        }
+
+    .choice .box {
+        border-radius: 15px;
+        -webkit-border-radius: 15px;
+        -moz-border-radius: 15px;
+        -ms-border-radius: 15px;
+        -o-border-radius: 15px;
+        box-shadow: 0 0 10px #ddd;
+        transition: transform var(--main-transition), box-shadow var(--main-transition);
+        -webkit-transition: transform var(--main-transition), box-shadow var(--main-transition);
+        -moz-transition: transform var(--main-transition), box-shadow var(--main-transition);
+        -ms-transition: transform var(--main-transition), box-shadow var(--main-transition);
+        -o-transition: transform var(--main-transition), box-shadow var(--main-transition);
+        background-color: white;
+        padding: 30px 70px 10px;
+    }
+
+        .choice .box > div {
+            margin: 20px;
+            position: relative;
+            background-color: white;
+        }
+
+        .choice .box:hover {
+            transform: translateY(-10px);
+            -webkit-transform: translateY(-10px);
+            -moz-transform: translateY(-10px);
+            -ms-transform: translateY(-10px);
+            -o-transform: translateY(-10px);
+            box-shadow: 0 0 20px #ccc;
+        }
+
+        .choice .box h2 {
+            color: var(--main-color);
+        }
+
+        .choice .box .foot {
+            margin: 40px 70px;
+            padding: 0 15px;
+            align-items: center;
+        }
+
+        .choice .box .foot a {
+            text-decoration: none;
+            font-size: 20px;
+            color: black;
+            font-weight: bold;
+        }
+
+        .choice .box .go-btn {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 20px 0 0 30px;
+            background-color: var(--main-color);
+            width: 100px;
+            height: 30px;
+        }
+
+        .choice .box .foot input {
+            margin: 0 0 0 -10px;
+            width: 200px;
+            border: 2px solid black;
+        }
+
+        .choice .box .foot a {
+            text-decoration: none;
+            font-size: 20px;
+            color: black;
+            font-weight: bold;
+        }
+
+        .choice .box .create-btn {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 20px 0 0 30px;
+            background-color: var(--main-color);
+            width: 100px;
+            height: 30px;
+        }
+
+            .choice .box .create-btn button,
+            .choice .box .go-btn button {
+                background-color: #003971;
+                color: white;
+                width: 100%;
+                height: 100%;
+                border: none;
+                cursor: pointer;
+            }
+
+        .choice .box .create-btn,
+        .choice .box .go-btn {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 20px 0 0 150px;
+        }
+</style>

@@ -1,0 +1,132 @@
+﻿@model Online_Exam.Models.Users
+@{
+    ViewBag.Title = "Login";
+    Layout = null;
+}
+
+<style>
+    html, body {
+        height: 100%;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #eee;
+    }
+
+    .custom-card {
+        height: 500px;
+        padding: 40px;
+        border-radius: 20px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+        background-color: #ffffff;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-between;
+        font-family: 'Arial', sans-serif;
+        width: 450px;
+    }
+
+    .form-horizontal {
+        margin-top: 20px;
+        width: 100%;
+        max-width: 300px;
+    }
+
+    .custom-input {
+        margin-bottom: 20px;
+        width: 100%;
+        font-size: 18px;
+        padding: 14px;
+        border: 1px solid #bdc3c7;
+        border-radius: 8px;
+    }
+
+    .custom-btn {
+        margin-top: 10px;
+        margin-bottom: 10px;
+        background-color: #3498db;
+        color: #ffffff;
+        width: 100%;
+        font-size: 20px;
+        padding: 14px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+    }
+
+    .custom-link-container {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        margin-top: -10px;
+    }
+
+    .custom-link {
+        margin-top: 10px;
+        color: #e74c3c;
+        font-size: 16px;
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+
+    .custom-link:hover {
+        color: #c0392b;
+    }
+
+    h1 {
+        color: #3498db;
+        font-size: 44px;
+        margin-bottom: -10px;
+    }
+
+    .custom-error-message {
+        color: red;
+    }
+</style>
+
+<div class="container custom-container">
+    <div class="row justify-content-center">
+        <div class="col-md-6 custom-form custom-card">
+            <h1>Login</h1>
+            @using (Html.BeginForm())
+            {
+                @Html.AntiForgeryToken()
+
+                <div class="form-horizontal">
+                    <hr />
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            @Html.LabelFor(model => model.U_Email, htmlAttributes: new { @class = "control-label col-md-2" })
+                            @Html.EditorFor(model => model.U_Email, new { htmlAttributes = new { @class = "form-control custom-input mx-auto d-block" } })
+                            @Html.ValidationMessageFor(model => model.U_Email, "", new { @class = "text-danger custom-error-message" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            @Html.LabelFor(model => model.U_Password, htmlAttributes: new { @class = "control-label col-md-2" })
+                            @Html.PasswordFor(model => model.U_Password, new { @class = "form-control custom-input mx-auto d-block" })
+                            @Html.ValidationMessageFor(model => model.U_Password, "", new { @class = "text-danger custom-error-message" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-12 text-center">
+                            <input type="submit" value="Login" class="btn btn-success custom-btn" />
+                        </div>
+                    </div>
+                </div>
+            }
+
+            <div class="custom-link-container">
+                <h6 style="color: black; font-size: 18px; margin-bottom: 5px; margin-top: 10px; margin-right: 10px;">Don't have an account?</h6>
+                @Html.ActionLink("Create Account", "Signup", new { @class = "custom-link" })
+            </div>
+        </div>
+    </div>
+</div>

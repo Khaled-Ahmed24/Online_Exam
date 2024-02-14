@@ -1,0 +1,27 @@
+﻿@model List<Online_Exam.Models.ResultsModel>
+
+@{
+    ViewData["Title"] = "Results";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h1>Results</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Email Address</th>
+            <th>Grade</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var Detail in Model)
+        {
+            <tr>
+                <td>@Detail.FullName</td>
+                <td>@Detail.Email</td>
+                <td>@Detail.Totalgrade</td>
+            </tr>
+}
+    </tbody>
+</table>

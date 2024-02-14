@@ -1,0 +1,59 @@
+﻿@using Online_Exam.Models
+@model PrintViewModel
+
+<style>
+    h1 {
+        color: #333;
+    }
+
+    h2 {
+        color: #555;
+    }
+
+    h3 {
+        margin-top: 10px;
+        font-weight: normal;
+    }
+
+    .hard-luck {
+        color: red;
+        font-size: 1.2em;
+        font-weight: bold;
+    }
+
+    .congratulations {
+        color: green;
+        font-size: 1.2em;
+        font-weight: bold;
+    }
+
+    .middle-content {
+        color: brown;
+        font-size: 1.5em;
+        font-weight: bold;
+    }
+</style>
+
+@{
+    decimal grade = ViewBag.Grade;
+    decimal Sumgrade = ViewBag.SumDegree;
+    decimal Pass = 0.5m;
+    string FullName = ViewBag.UserName;
+    string ExamTitle = ViewBag.ExamTitle;
+}
+
+<h1>Exam Completed for Course : @ExamTitle</h1>
+@if (Sumgrade == 0) Sumgrade = 1;
+@if ((grade / Sumgrade) < Pass)
+{
+    <h3 class="hard-luck">Hard Luck @FullName</h3>
+    <br />
+    <br />
+    <h2> Your Grade is: @grade from @Sumgrade </h2>
+}
+else
+{
+    <h3 class="congratulations">Congratulations @FullName</h3>
+    <br />
+    <h2> Your Grade is: @grade from @Sumgrade </h2>
+}

@@ -1,0 +1,124 @@
+﻿@model Online_Exam.Models.CreateQuestionViewModel
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Create</h1>
+
+<h4>Questions</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create" id="createQuestionForm">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Question.Question_title" class="control-label"></label>
+                <input asp-for="Question.Question_title" class="form-control" />
+                <span asp-validation-for="Question.Question_title" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Question.Question_type" class="control-label"></label>
+                <select asp-for="Question.Question_type" class="form-control">
+                    @*  <option value="">Choose Question Type</option> *@
+                    <option value="MultipleChoice">Multiple Choice</option>
+                    <option value="CheckBox">CheckBox</option>
+                </select>
+                <span asp-validation-for="Question.Question_type" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Question.Points" class="control-label"></label>
+                <input asp-for="Question.Points" class="form-control" />
+                <span asp-validation-for="Question.Points" class="text-danger"></span>
+            </div>
+   
+
+            <h4>Choices</h4>
+            <div class="choices-container">
+                <!-- Choices will be dynamically added here -->
+            </div>
+
+            <button type="button" id="addChoice" class="btn btn-secondary">Add Choice</button>
+            <button type="button" id="removeChoice" class="btn btn-danger">Remove Choice</button>
+
+            <!-- "Finish" button -->
+            <button type="button" id="finish" class="btn btn-success">Finish</button>
+
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" style="display: none;" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<p>@ViewBag.msg</p>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        $(document).ready(function () {
+            var choiceIndex = 0;
+
+            // "Add Choices" button click event
+            $("#addChoice").on("click", function () {
+                var newChoice = `
+                                    <div class="choice">
+                                        <label>Choice Text</label>
+                                        <input name="Choices[${choiceIndex}].Choice_text" class="form-control" />
+
+                                        <label>Is Correct</label>
+                                        <input type="checkbox" class="is-correct-checkbox" name="Choices[${choiceIndex}].Is_correct" />
+                                    </div>`;
+
+                $(".choices-container").append(newChoice);
+                choiceIndex++;
+            });
+
+            // "Remove Choice" button click event
+            $("#removeChoice").on("click", function () {
+                if (choiceIndex > 0) {
+                    $(".choice:last").remove();
+                    choiceIndex--;
+                }
+            });
+
+            // Handle checkbox state when dynamically adding choices
+            $(".choices-container").on("change", ".is-correct-checkbox", function () {
+                var questionType = $("#Question_Question_type").val();
+                if (questionType !== "CheckBox" && $(this).is(":checked")) {
+                    $(".is-correct-checkbox").not(this).prop("checked", false);
+                }
+            });
+
+            $("#finish").on("click", function () {
+                // Set the value of Is_correct based on checkbox state before submitting
+                $(".is-correct-checkbox").each(function () {
+                    $(this).val($(this).is(":checked"));
+                });
+
+                var questionType = $("#Question_Question_type").val();
+                var correctChoicesCount = $("input[name^='Choices[']:checked").length;
+
+                if (
+                    (questionType === "MultipleChoice" && correctChoicesCount === 1) ||
+                    (questionType === "CheckBox" && correctChoicesCount >= 1)
+                ) {
+                    // Submit the form
+                    $("#createQuestionForm").submit();
+                } else {
+                    alert("Invalid number of correct choices based on the question type.");
+                }
+            });
+        });
+    </script>
+}
+

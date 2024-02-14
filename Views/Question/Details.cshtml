@@ -1,0 +1,62 @@
+﻿@model Online_Exam.Models.CreateQuestionViewModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>Questions</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Question.Question_title)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Question.Question_title)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Question.Question_type)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Question.Question_type)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Question.Points)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Question.Points)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Question.Exam)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Question.Exam_id)
+        </dd>
+    </dl>
+
+    <h4>Choices</h4>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Choice Text</th>
+                <th>Is Correct</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var choice in Model.Choices)
+            {
+                <tr>
+                    <td>@choice.Choice_text</td>
+                    <td>@(choice.Is_correct ? "Yes" : "No")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<div>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Question.Question_id/* id = Model.PrimaryKey */ }) |
+    <a asp-action="Index">Back to List</a>
+</div>

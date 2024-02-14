@@ -1,0 +1,128 @@
+﻿@model Online_Exam.Models.CreateQuestionViewModel
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Edit</h1>
+
+<h4>Questions</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit" id="editQuestionForm">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Question.Question_title" class="control-label"></label>
+                <input asp-for="Question.Question_title" class="form-control" />
+                <span asp-validation-for="Question.Question_title" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Question.Question_type" class="control-label"></label>
+                <select asp-for="Question.Question_type" class="form-control">
+                    <option value="MultipleChoice">Multiple Choice</option>
+                    <option value="CheckBox">CheckBox</option>
+                </select>
+                <span asp-validation-for="Question.Question_type" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Question.Points" class="control-label"></label>
+                <input asp-for="Question.Points" class="form-control" />
+                <span asp-validation-for="Question.Points" class="text-danger"></span>
+            </div>
+      
+
+            <h4>Choices</h4>
+            <div class="choices-container">
+                <!-- Display existing choices for editing -->
+                @for (int i = 0; i < Model.Choices.Count; i++)
+                {
+                    <div class="choice">
+                        <label>Choice Text</label>
+                        <input name="Choices[@i].Choice_text" class="form-control" value="@Model.Choices[i].Choice_text" />
+
+                        <label>Is Correct</label>
+                        <input type="checkbox" name="Choices[@i].Is_correct" class="is-correct-checkbox" @(Model.Choices[i].Is_correct ? "checked" : "") />
+                    </div>
+                }
+            </div>
+
+            <!-- "Finish" button for editing -->
+            <button type="button" id="finishEdit" class="btn btn-success">Finish Edit</button>
+
+            <div class="form-group">
+                <input type="submit" value="Save Changes" class="btn btn-primary" style="display: none;" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<p>@ViewBag.msg</p>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        $(document).ready(function () {
+            // Initialize the selected question type
+            var selectedQuestionType = "@Model.Question.Question_type";
+
+            // Set the initial checkbox behavior based on the question type
+            updateCheckboxBehavior(selectedQuestionType);
+
+            // "Finish Edit" button click event
+            $("#finishEdit").on("click", function () {
+                // Set the value of Is_correct based on checkbox state before submitting
+                $(".is-correct-checkbox").each(function () {
+                    $(this).val($(this).is(":checked"));
+                });
+
+                // Update choice text values before submitting
+                $(".choice-text-input").each(function () {
+                    $(this).val($(this).val());
+                });
+
+                var questionType = $("#Question_Question_type").val();
+                var correctChoicesCount = $("input[name^='Choices[']:checked").length;
+
+                if (
+                    (questionType === "MultipleChoice" && correctChoicesCount === 1) ||
+                    (questionType === "CheckBox" && correctChoicesCount >= 1)
+                ) {
+                    // Submit the form
+                    $("#editQuestionForm").submit();
+                } else {
+                    alert("Invalid number of correct choices based on the question type.");
+                }
+
+
+            });
+
+            // Handle question type change
+            $("#Question_Question_type").on("change", function () {
+                selectedQuestionType = $(this).val();
+                updateCheckboxBehavior(selectedQuestionType);
+            });
+
+            function updateCheckboxBehavior(questionType) {
+                if (questionType === "MultipleChoice") {
+                    // If the question type is "Multiple Choice," allow checking only one box
+                    $(".is-correct-checkbox").on("change", function () {
+                        $(".is-correct-checkbox").not(this).prop("checked", false);
+                    });
+                } else if (questionType === "CheckBox") {
+                    // If the question type is "Check Box," allow checking multiple boxes
+                    $(".is-correct-checkbox").off("change");
+                }
+            }
+        });
+    </script>
+}

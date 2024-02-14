@@ -1,0 +1,42 @@
+﻿@model List<Online_Exam.Models.Exam>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>My Exams</h2>
+
+<table class="table">
+    <!-- Table header -->
+    <thead>
+        <tr>
+            <th>Exam ID</th>
+            <th>Title</th>
+            <th>Description</th>
+            <!-- Add other columns as needed -->
+        </tr>
+    </thead>
+    <!-- Table body -->
+    <tbody>
+        @foreach (var exam in Model)
+        {
+            <tr>
+                <td>@exam.Exam_id</td>
+                <td>@exam.Exam_title</td>
+                <td>@exam.Description</td>
+                <td>
+                    @Html.ActionLink("Edit ex", "Edit", new { id = exam.Exam_id /* id=item.PrimaryKey */ }) |
+                    @Html.ActionLink("Details", "Details", new { id = exam.Exam_id  /*id=item.PrimaryKey */ }) |
+                    @Html.ActionLink("Delete", "Delete", new { id = exam.Exam_id /* id=item.PrimaryKey */ })
+                    <a asp-controller="Exam" asp-action="Results" asp-route-id="@exam.Exam_id" class="btn btn-info">
+                        <i class="bi bi-arrow-right-circle"></i>
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<!-- Button to navigate to the Create Exam page -->
+<a asp-action="Create" class="btn btn-primary">Create Exam</a>
